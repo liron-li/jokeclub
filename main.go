@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"flag"
-	"goweb/app/crontab"
-	"goweb/database/migration"
-	"goweb/pkg/setting"
-	"goweb/routers"
+	"jokeclub/app/crontab"
+	"jokeclub/database/migration"
+	"jokeclub/pkg/setting"
+	"jokeclub/routers"
 )
 
 var action = flag.String("action", "serve", "action")

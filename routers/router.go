@@ -3,11 +3,11 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 
-	"goweb/app/controllers/api"
-	"goweb/app/controllers/home"
-	"goweb/app/middleware"
-	"goweb/pkg/setting"
-)
+	"jokeclub/app/controllers/api"
+	"jokeclub/app/controllers/home"
+	"jokeclub/app/middleware"
+	"jokeclub/pkg/setting"
+	)
 
 func InitRouter() *gin.Engine {
 	r := gin.New()
@@ -24,10 +24,15 @@ func InitRouter() *gin.Engine {
 
 	r.POST("/api/login", api.Login)
 
-	apiRoute := r.Group("/api")
-	apiRoute.Use(middleware.Example(), middleware.JWT())
+	authRoute := r.Group("/api/user")
+	authRoute.Use(middleware.Example(), middleware.JWT())
 	{
-		apiRoute.GET("/user/profile", api.Profile)
+		authRoute.GET("/profile", api.Profile)
+	}
+
+	jokeRoute := r.Group("/api/jokes")
+	{
+		jokeRoute.GET("", api.Jokes)
 	}
 
 	return r

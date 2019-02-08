@@ -5,7 +5,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 
-	"goweb/pkg/setting"
+	"jokeclub/pkg/setting"
 )
 
 var jwtSecret = []byte(setting.JwtSecret)

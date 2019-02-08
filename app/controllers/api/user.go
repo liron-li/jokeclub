@@ -6,10 +6,10 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 
-	"goweb/app/models"
-	"goweb/pkg/e"
-	"goweb/pkg/logging"
-	"goweb/pkg/util"
+	"jokeclub/app/models"
+	"jokeclub/pkg/e"
+	"jokeclub/pkg/logging"
+	"jokeclub/pkg/util"
 )
 
 type auth struct {

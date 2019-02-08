@@ -2,7 +2,7 @@ package util
 
 import (
 	"github.com/gin-gonic/gin"
-	"goweb/pkg/e"
+	"jokeclub/pkg/e"
 )
 
 func RetJson(code int, data interface{}) gin.H {

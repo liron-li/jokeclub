@@ -1,7 +1,7 @@
 package migration
 
 import (
-	"goweb/app/models"
+	"jokeclub/app/models"
 )
 
 func Migration() {

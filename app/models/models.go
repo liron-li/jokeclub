@@ -7,7 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
-	"goweb/pkg/setting"
+	"jokeclub/pkg/setting"
 )
 
 var DB *gorm.DB

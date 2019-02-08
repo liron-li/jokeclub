@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/robfig/cron"
-	"goweb/pkg/logging"
+	"jokeclub/pkg/logging"
 )
 
 func CronHandel() {
