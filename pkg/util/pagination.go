@@ -1,17 +1,10 @@
 package util
 
-import (
-	"github.com/Unknwon/com"
-	"github.com/gin-gonic/gin"
-
-	"jokeclub/pkg/setting"
-)
-
-func GetPage(c *gin.Context) int {
+func GetPageOffset(page int, pageSize int) int {
 	result := 0
-	page, _ := com.StrTo(c.Query("page")).Int()
+
 	if page > 0 {
-		result = (page - 1) * setting.PageSize
+		result = (page - 1) * pageSize
 	}
 
 	return result

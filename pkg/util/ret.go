@@ -7,8 +7,8 @@ import (
 
 func RetJson(code int, data interface{}) gin.H {
 	return gin.H{
-		"code": e.Success,
-		"msg":  e.GetMsg(e.Success),
+		"code": code,
+		"msg":  e.GetMsg(code),
 		"data": data,
 	}
 }

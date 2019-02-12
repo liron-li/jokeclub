@@ -4,6 +4,7 @@ var MsgFlags = map[int]string{
 	Success:       "ok",
 	Error:         "fail",
 	PasswordError: "密码错误",
+	InvalidParams: "参数错误",
 }
 
 func GetMsg(code int) string {
