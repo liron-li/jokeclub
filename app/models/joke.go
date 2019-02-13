@@ -3,6 +3,7 @@ package models
 import (
 	"jokeclub/pkg/util"
 	"github.com/Unknwon/com"
+	"github.com/gin-gonic/gin"
 )
 
 type Joke struct {
@@ -22,14 +23,14 @@ func (Joke) TableName() string {
 	return "jokes"
 }
 
-func JokePaginate(page string, pageSize string, maps interface{}) (p Paginate) {
+func JokePaginate(c *gin.Context, page string, pageSize string, maps interface{}) (p Paginate) {
 
 	pageInt, _ := com.StrTo(page).Int()
 	pageSizeInt, _ := com.StrTo(pageSize).Int()
 
 	var jokes []Joke
 	DB.Where(maps).Offset(util.GetPageOffset(pageInt, pageSizeInt)).Limit(pageSize).Find(&jokes)
-	return Paginate{Page: pageInt, PageSize: pageSizeInt, Data: jokes, Total: GetJokePaginateTotal(maps)}
+	return Paginate{Page: pageInt, PageSize: pageSizeInt, Data: jokes, Total: GetJokePaginateTotal(maps), Url: c.Request.URL.Path}
 }
 
 func GetJokePaginateTotal(maps interface{}) (count int) {

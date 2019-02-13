@@ -29,7 +29,7 @@ func Jokes(c *gin.Context) {
 	code := e.InvalidParams
 
 	if ok {
-		data = models.JokePaginate(page, pageSize, maps)
+		data = models.JokePaginate(c, page, pageSize, maps)
 	}
 
 	c.JSON(http.StatusOK, util.RetJson(code, data))

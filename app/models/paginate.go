@@ -5,4 +5,5 @@ type Paginate struct {
 	PageSize int
 	Data interface{}
 	Total int
+	Url string
 }
