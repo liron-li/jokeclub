@@ -30,7 +30,7 @@ func JokePaginate(c *gin.Context, page string, pageSize string, maps interface{}
 
 	var jokes []Joke
 	DB.Where(maps).Offset(util.GetPageOffset(pageInt, pageSizeInt)).Limit(pageSize).Find(&jokes)
-	return Paginate{Page: pageInt, PageSize: pageSizeInt, Data: jokes, Total: GetJokePaginateTotal(maps), Url: c.Request.URL.Path}
+	return Paginate{CurrentPage: pageInt, PerSize: pageSizeInt, Data: jokes, Total: GetJokePaginateTotal(maps), Path: c.Request.URL.Path}
 }
 
 func GetJokePaginateTotal(maps interface{}) (count int) {

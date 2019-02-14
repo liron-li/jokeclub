@@ -30,6 +30,7 @@ func Jokes(c *gin.Context) {
 
 	if ok {
 		data = models.JokePaginate(c, page, pageSize, maps)
+		code = e.Success
 	}
 
 	c.JSON(http.StatusOK, util.RetJson(code, data))

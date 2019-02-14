@@ -1,9 +1,9 @@
 package models
 
 type Paginate struct {
-	Page int
-	PageSize int
-	Data interface{}
-	Total int
-	Url string
+	CurrentPage int
+	PerSize     int
+	Data        interface{}
+	Total       int
+	Path        string
 }
