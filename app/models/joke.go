@@ -4,19 +4,23 @@ import (
 	"jokeclub/pkg/util"
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 type Joke struct {
-	Model
-	UserId      string
-	Content     string
-	Image       string
-	Video       string
-	UpNum       int
-	DownNum     int
-	FavoriteNum int
-	CommentNum  int
-	Type        int
+	ID          uint       `gorm:"primary_key"json:"id"`
+	UserId      string     `json:"user_id"`
+	Content     string     `json:"content"`
+	Image       string     `json:"image"`
+	Video       string     `json:"video"`
+	UpNum       int        `json:"up_num"`
+	DownNum     int        `json:"down_num"`
+	FavoriteNum int        `json:"favorite_num"`
+	CommentNum  int        `json:"comment_num"`
+	Type        int        `json:"type"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
+	DeletedAt   *time.Time `sql:"index"json:"deleted_at"`
 }
 
 func (Joke) TableName() string {
