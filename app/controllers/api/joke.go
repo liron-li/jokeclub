@@ -15,14 +15,17 @@ type paginateRequest struct {
 }
 
 /**
- * @api {get} /user/:id Request User information
- * @apiName GetUser
- * @apiGroup User
+ * @api {get} /api/jokes 获取段子列表数据
+ * @apiName getJokes
+ * @apiGroup jokes
  *
- * @apiParam {Number} id Users unique ID.
+ * @apiParam {Int} [page] 页码
+ * @apiParam {Int} [pageSize] 每页条数
  *
  * @apiSuccess {String} firstname Firstname of the User.
  * @apiSuccess {String} lastname  Lastname of the User.
+ *
+ * @apiSampleRequest http://localhost:8000/api/jokes
  */
 func Jokes(c *gin.Context) {
 
