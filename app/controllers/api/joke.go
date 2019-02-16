@@ -28,6 +28,14 @@ type paginateRequest struct {
  * @apiSuccess {array} data  数据体
  * @apiSuccess {int} data.id  id
  * @apiSuccess {int} data.user_id  用户id
+ * @apiSuccess {object} data.user  用户信息
+ * @apiSuccess {string} data.user.name  用户名
+ * @apiSuccess {string} data.user.nickname  昵称
+ * @apiSuccess {string} data.user.email  邮箱
+ * @apiSuccess {string} data.user.avatar  头像
+ * @apiSuccess {string} data.user.slogan  签名
+
+ * @apiSuccess {string} data.user.created_at  创建时间
  * @apiSuccess {string} data.content  内容
  * @apiSuccess {string} data.image  图片资源路径
  * @apiSuccess {string} data.video  视频资源路径
