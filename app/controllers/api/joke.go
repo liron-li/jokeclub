@@ -1,12 +1,12 @@
 package api
 
 import (
-	"net/http"
+	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
+	"jokeclub/app/models"
 	"jokeclub/pkg/e"
 	"jokeclub/pkg/util"
-	"github.com/astaxie/beego/validation"
-	"jokeclub/app/models"
+	"net/http"
 )
 
 type paginateRequest struct {
@@ -14,6 +14,16 @@ type paginateRequest struct {
 	PageSize string `valid:"Required; MaxSize(50)"`
 }
 
+/**
+ * @api {get} /user/:id Request User information
+ * @apiName GetUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Users unique ID.
+ *
+ * @apiSuccess {String} firstname Firstname of the User.
+ * @apiSuccess {String} lastname  Lastname of the User.
+ */
 func Jokes(c *gin.Context) {
 
 	var data interface{}

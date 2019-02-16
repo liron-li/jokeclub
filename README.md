@@ -21,3 +21,9 @@ go install
 ```
 go build -ldflags "-s -w"
 ```
+
+4. 生成api文档
+
+```
+   apidoc -i app/controllers/api -o apidoc/
+```
