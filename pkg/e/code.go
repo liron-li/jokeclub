@@ -5,6 +5,8 @@ var MsgFlags = map[int]string{
 	Error:         "fail",
 	PasswordError: "密码错误",
 	InvalidParams: "参数错误",
+	AccountExist:  "账号已经存在",
+	NicknameExist: "昵称已经存在",
 }
 
 func GetMsg(code int) string {

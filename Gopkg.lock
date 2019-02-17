@@ -234,6 +234,14 @@
   version = "v1.1"
 
 [[projects]]
+  digest = "1:66556cc8b0e653163aba0b610772b268215da4d6439e3d273264e7ba651a25e4"
+  name = "github.com/thedevsaddam/govalidator"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "0413a0eb80cac8ab2d666639130658ce49a0c967"
+  version = "v1.9.6"
+
+[[projects]]
   digest = "1:90f91b3ecbf37365e8c730bb4270df8e12769fe157dbd8472f7b2da9c69a2bd6"
   name = "github.com/thinkerou/favicon"
   packages = ["."]
@@ -441,6 +449,7 @@
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/robfig/cron",
+    "github.com/thedevsaddam/govalidator",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

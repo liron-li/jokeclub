@@ -8,4 +8,6 @@ const (
 
 	InvalidJwtToken = 4
 	JwtTokenTimeout = 5
+	AccountExist    = 6
+	NicknameExist   = 7
 )
