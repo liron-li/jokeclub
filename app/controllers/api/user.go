@@ -106,15 +106,39 @@ func Login(c *gin.Context) {
  */
 func Register(c *gin.Context) {
 
+	_type := c.PostForm("type")
+	identify := c.PostForm("identify")
+	password := c.PostForm("password")
+	nickname := c.PostForm("nickname")
+	typeInt, _ := com.StrTo(_type).Int()
+
 	rules := govalidator.MapData{
-		"type":     []string{"required", "digits:1"},
-		"identify": []string{"required", "max:32", "alpha_num", "min:4"},
+		"type": []string{"required", "digits:1"},
+		"identify": func(_type int) []string {
+			var r []string
+			switch _type {
+			case 1: // 手机
+				r = []string{"required", "max:32", "digits_between:6,11", "min:4"}
+			case 2: // 邮箱
+				r = []string{"required", "max:32", "email", "min:4"}
+			default:
+				r = []string{"required", "max:32", "alpha_num", "min:4"}
+			}
+			return r
+		}(typeInt),
 		"password": []string{"max:32", "min:6", "alpha_num"},
 		"nickname": []string{"required", "max:18", "min:4"},
 	}
 
 	messages := govalidator.MapData{
-		"identify": []string{"required:账号不能为空", "max:账号最多32个字符", "alpha_num:账号只能是数字和字母", "min:账号至少有4个字符"},
+		"identify": []string{
+			"required:账号不能为空",
+			"max:账号最多32个字符",
+			"alpha_num:账号只能是数字和字母",
+			"min:账号至少有4个字符",
+			"email:邮箱格式错误",
+			"digits_between:手机号格式不正确",
+		},
 		"password": []string{"max:密码最多32个字符", "min:密码至少有6个字符", "alpha_num:密码只能是数字和字母"},
 		"nickname": []string{"required:昵称不能为空", "max:账号最多32个字符", "min:昵称至少4个字符"},
 	}
@@ -134,13 +158,6 @@ func Register(c *gin.Context) {
 		util.ReturnInvalidParamsJson(c, res)
 		return
 	}
-
-	_type := c.PostForm("type")
-	identify := c.PostForm("identify")
-	password := c.PostForm("password")
-	nickname := c.PostForm("nickname")
-
-	typeInt, _ := com.StrTo(_type).Int()
 
 	// 如果账号已经存在
 	if models.CheckUserAuthExist(identify, typeInt) {
