@@ -16,7 +16,6 @@ type paginateRequest struct {
 
 /**
  * @api {get} /api/jokes 获取段子列表数据
- * @apiName getJokes
  * @apiGroup jokes
  *
  * @apiParam {int} [page] 页码
@@ -83,4 +82,89 @@ func Jokes(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, util.RetJson(code, data))
+}
+
+/**
+ * @api {post} /api/jokes/up 支持
+ * @apiGroup jokes
+ *
+ * @apiParam {string} username 用户名称
+ * @apiParam {string} password 密码
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/jokes/up
+ */
+func JokeUp(c *gin.Context) {
+	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
+}
+
+/**
+ * @api {post} /api/jokes/down 反对
+ * @apiGroup jokes
+ *
+ * @apiParam {string} username 用户名称
+ * @apiParam {string} password 密码
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/jokes/down
+ */
+func JokeDown(c *gin.Context) {
+	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
+}
+
+/**
+ * @api {post} /api/jokes/favorite 收藏
+ * @apiGroup jokes
+ *
+ * @apiParam {string} username 用户名称
+ * @apiParam {string} password 密码
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/jokes/favorite
+ */
+func JokeFavorite(c *gin.Context) {
+	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
+}
+
+/**
+ * @api {get} /api/jokes/comments 获取评论
+ * @apiGroup jokes
+ *
+ * @apiParam {string} username 用户名称
+ * @apiParam {string} password 密码
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/jokes/comments
+ */
+func Comments(c *gin.Context) {
+	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
+}
+
+/**
+ * @api {post} /api/jokes/comments 发起评论
+ * @apiGroup jokes
+ *
+ * @apiParam {string} username 用户名称
+ * @apiParam {string} password 密码
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/jokes/comments
+ */
+func PostComments(c *gin.Context) {
+	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
 }

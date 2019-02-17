@@ -22,14 +22,18 @@ func InitRouter() *gin.Engine {
 
 	r.GET("/", home.Index)
 
-	r.POST("/api/login", api.Login)
-
 	r.Use(middleware.Cors())
+	r.POST("/api/login", api.Login)
+	r.POST("/api/register", api.Register)
 
 	authRoute := r.Group("/api/user")
 	authRoute.Use(middleware.JWT())
 	{
 		authRoute.GET("/profile", api.Profile)
+		authRoute.GET("/my-message", api.MyMessage)
+		authRoute.GET("/my-up-jokes", api.MyUpedJokes)
+		authRoute.GET("/my-favorite", api.MyFavorite)
+		authRoute.POST("/my-feedback", api.Feedback)
 	}
 
 	jokeRoute := r.Group("/api/jokes")
@@ -37,6 +41,11 @@ func InitRouter() *gin.Engine {
 	jokeRoute.Use()
 	{
 		jokeRoute.GET("", api.Jokes)
+		jokeRoute.POST("/up", api.JokeUp)
+		jokeRoute.POST("/down", api.JokeDown)
+		jokeRoute.POST("/favorite", api.JokeFavorite)
+		jokeRoute.GET("/comments", api.Comments)
+		jokeRoute.POST("/comments", api.PostComments)
 	}
 
 	return r

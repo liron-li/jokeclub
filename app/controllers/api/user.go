@@ -17,6 +17,19 @@ type auth struct {
 	Password string `valid:"Required; MaxSize(50)"`
 }
 
+/**
+ * @api {get} /api/user/profile 获取用户详细信息
+ * @apiName userProfile
+ * @apiGroup user
+ *
+ * @apiParam {string} token 页码
+
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/user/profile
+ */
 func Profile(c *gin.Context) {
 	token := c.Query("token")
 	claims, err := util.ParseToken(token)
@@ -27,6 +40,20 @@ func Profile(c *gin.Context) {
 	c.JSON(http.StatusOK, util.RetJson(e.Success, claims))
 }
 
+/**
+ * @api {get} /api/login 登录
+ * @apiName userLogin
+ * @apiGroup user
+ *
+ * @apiParam {string} username 用户名称
+ * @apiParam {string} password 密码
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/login
+ */
 func Login(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
@@ -59,4 +86,89 @@ func Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, util.RetJson(code, data))
+}
+
+/**
+ * @api {get} /api/register 注册
+ * @apiGroup user
+ *
+ * @apiParam {string} username 用户名称
+ * @apiParam {string} password 密码
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/register
+ */
+func Register(c *gin.Context) {
+	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
+}
+
+/**
+ * @api {get} /api/user/my-message 私信
+ * @apiGroup user
+ *
+ * @apiParam {string} username 用户名称
+ * @apiParam {string} password 密码
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/user/my-message
+ */
+func MyMessage(c *gin.Context) {
+	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
+}
+
+/**
+ * @api {get} /api/user/my-up-jokes 我赞过的
+ * @apiGroup user
+ *
+ * @apiParam {string} username 用户名称
+ * @apiParam {string} password 密码
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/user/my-up-jokes
+ */
+func MyUpedJokes(c *gin.Context) {
+	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
+}
+
+/**
+ * @api {get} /api/user/my-favorite 我的收藏
+ * @apiGroup user
+ *
+ * @apiParam {string} username 用户名称
+ * @apiParam {string} password 密码
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/user/my-favorite
+ */
+func MyFavorite(c *gin.Context) {
+	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
+}
+
+/**
+ * @api {get} /api/user/my-feedback 意见反馈
+ * @apiGroup user
+ *
+ * @apiParam {string} username 用户名称
+ * @apiParam {string} password 密码
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/user/my-feedback
+ */
+func Feedback(c *gin.Context) {
+	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
 }
