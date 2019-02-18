@@ -110,7 +110,12 @@ func Register(c *gin.Context) {
 	identify := c.PostForm("identify")
 	password := c.PostForm("password")
 	nickname := c.PostForm("nickname")
-	typeInt, _ := com.StrTo(_type).Int()
+	typeInt, err := com.StrTo(_type).Int()
+
+	if err != nil {
+		util.RetrunErrorJson(c, e.Error)
+		return
+	}
 
 	rules := govalidator.MapData{
 		"type": []string{"required", "digits:1"},
