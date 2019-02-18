@@ -175,10 +175,10 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	err := models.DoRegister(identify, typeInt, password, nickname)
+	errors := models.DoRegister(identify, typeInt, password, nickname)
 
-	if err != nil {
-		logging.Error(err)
+	if errors != nil {
+		logging.Error(errors)
 		util.RetrunErrorJson(c, e.Error)
 		return
 	}
