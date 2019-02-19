@@ -20,14 +20,16 @@ func (User) TableName() string {
 	return "users"
 }
 
-func CheckAuth(username, password string) bool {
-	//var user User
-	//DB.Select("id").Where(User{Nickname: username, Password: password}).First(&user)
-	//if user.ID > 0 {
-	//	return true
-	//}
+func CheckAuth(username, password string) (UserAuth, bool) {
 
-	return false
+	var userAuth UserAuth
+	DB.Where(UserAuth{Identify:username}).First(&userAuth)
+
+	if userAuth.ID > 0 && MakePassword(password, userAuth.PasswordSalt) ==  userAuth.Password{
+		return userAuth, true
+	}
+
+	return userAuth, false
 }
 
 func CheckUserExist(user User) bool {

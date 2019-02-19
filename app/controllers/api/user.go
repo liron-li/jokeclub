@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/Unknwon/com"
-	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 	"jokeclub/app/models"
@@ -13,13 +12,8 @@ import (
 	"jokeclub/pkg/util"
 )
 
-type authRequest struct {
-	Username string `valid:"Required; MaxSize(50)"`
-	Password string `valid:"Required; MaxSize(50)"`
-}
-
 /**
- * @api {asdget} /api/user/profile 获取用户详细信息
+ * @api {get} /api/user/profile 获取用户详细信息
  * @apiName userProfile
  * @apiGroup user
  *
@@ -38,7 +32,7 @@ func Profile(c *gin.Context) {
 		c.AbortWithStatus(401)
 	}
 
-	c.JSON(http.StatusOK, util.RetJson(e.Success, claims))
+	util.ReturnSuccessJson(c, claims)
 }
 
 /**
@@ -59,34 +53,55 @@ func Login(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
-	valid := validation.Validation{}
-	a := authRequest{Username: username, Password: password}
-	ok, _ := valid.Valid(&a)
-
-	data := make(map[string]interface{})
-	code := e.InvalidParams
-
-	if ok {
-		isExist := models.CheckAuth(username, password)
-		if isExist {
-			token, err := util.GenerateToken(username, password)
-			if err != nil {
-				code = e.Error
-			} else {
-				data["token"] = token
-				code = e.Success
-			}
-
-		} else {
-			code = e.PasswordError
-		}
-	} else {
-		for _, err := range valid.Errors {
-			logging.Info(err.Key, err.Message)
-		}
+	rules := govalidator.MapData{
+		"username": []string{"required", "max:32", "alpha_num", "min:4"},
+		"password": []string{"max:32", "min:6", "alpha_num"},
 	}
 
-	c.JSON(http.StatusOK, util.RetJson(code, data))
+	messages := govalidator.MapData{
+		"username": []string{
+			"required:账号不能为空",
+			"max:账号最多32个字符",
+			"alpha_num:账号只能是数字和字母",
+			"min:账号至少有4个字符",
+		},
+		"password": []string{"max:密码最多32个字符", "min:密码至少有6个字符", "alpha_num:密码只能是数字和字母"},
+	}
+
+	opts := govalidator.Options{
+		Request:         c.Request, // request object
+		Rules:           rules,     // rules map
+		Messages:        messages,  // custom message map (Optional)
+		RequiredDefault: false,     // all the field to be pass the rules
+	}
+
+	v := govalidator.New(opts)
+	res := v.Validate()
+
+	// 如果参数验证失败
+	if len(res) > 0 {
+		util.ReturnInvalidParamsJson(c, res)
+		return
+	}
+
+	var code int
+	data := make(map[string]interface{})
+
+	userAuth, isExist := models.CheckAuth(username, password)
+	if isExist {
+		token, err := util.GenerateToken(userAuth.UserId, username, password)
+		if err != nil {
+			code = e.Error
+		} else {
+			data["token"] = token
+			code = e.Success
+		}
+
+	} else {
+		code = e.PasswordError
+	}
+
+	util.ReturnJson(c, code, data)
 }
 
 /**
@@ -106,22 +121,22 @@ func Login(c *gin.Context) {
  */
 func Register(c *gin.Context) {
 
-	_type := c.PostForm("type")
+	typeValue := c.PostForm("type")
 	identify := c.PostForm("identify")
 	password := c.PostForm("password")
 	nickname := c.PostForm("nickname")
-	typeInt, err := com.StrTo(_type).Int()
+	typeInt, err := com.StrTo(typeValue).Int()
 
 	if err != nil {
-		util.RetrunErrorJson(c, e.Error)
+		util.ReturnErrorJson(c, e.Error)
 		return
 	}
 
 	rules := govalidator.MapData{
 		"type": []string{"required", "digits:1"},
-		"identify": func(_type int) []string {
+		"identify": func(typeValue int) []string {
 			var r []string
-			switch _type {
+			switch typeValue {
 			case 1: // 手机
 				r = []string{"required", "max:32", "digits_between:6,11", "min:4"}
 			case 2: // 邮箱
@@ -166,12 +181,12 @@ func Register(c *gin.Context) {
 
 	// 如果账号已经存在
 	if models.CheckUserAuthExist(identify, typeInt) {
-		util.RetrunErrorJson(c, e.AccountExist)
+		util.ReturnErrorJson(c, e.AccountExist)
 		return
 	}
 	// 昵称存在
 	if models.CheckUserExist(models.User{Nickname: nickname}) {
-		util.RetrunErrorJson(c, e.NicknameExist)
+		util.ReturnErrorJson(c, e.NicknameExist)
 		return
 	}
 
@@ -179,11 +194,11 @@ func Register(c *gin.Context) {
 
 	if errors != nil {
 		logging.Error(errors)
-		util.RetrunErrorJson(c, e.Error)
+		util.ReturnErrorJson(c, e.Error)
 		return
 	}
 
-	util.ReturnSuccesJson(c, nil)
+	util.ReturnSuccessJson(c, nil)
 }
 
 /**

@@ -18,10 +18,14 @@ func ReturnInvalidParamsJson(c *gin.Context, errMsg map[string][]string) {
 	c.JSON(http.StatusOK, RetJson(e.InvalidParams, errMsg))
 }
 
-func ReturnSuccesJson(c *gin.Context, data interface{}) {
+func ReturnSuccessJson(c *gin.Context, data interface{}) {
 	c.JSON(http.StatusOK, RetJson(e.Success, data))
 }
 
-func RetrunErrorJson(c *gin.Context, code int) {
+func ReturnErrorJson(c *gin.Context, code int) {
 	c.JSON(http.StatusOK, RetJson(code, nil))
+}
+
+func ReturnJson(c *gin.Context, code int, data interface{})  {
+	c.JSON(http.StatusOK, RetJson(code, data))
 }
