@@ -2,6 +2,14 @@ package models
 
 import (
 	"time"
+	"github.com/Unknwon/com"
+	"fmt"
+	"crypto/md5"
+)
+
+const (
+	StatusEnable  = 1
+	StatusDisable = 0
 )
 
 type User struct {
@@ -18,8 +26,24 @@ type User struct {
 	DeletedAt *time.Time `json:"-"`
 }
 
+type UserAuth struct {
+	ID            int       `gorm:"primary_key"json:"id"`
+	UserId        uint      `json:"user_id"`
+	Identify      string    `json:"identify"`
+	Password      string    `json:"-"`
+	RememberToken string    `json:"-"`
+	PasswordSalt  string    `json:"-"`
+	Type          int       `json:"type"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+}
+
 func (User) TableName() string {
 	return "users"
+}
+
+func (UserAuth) TableName() string {
+	return "user_auths"
 }
 
 func CheckAuth(username, password string) (UserAuth, bool) {
@@ -47,4 +71,58 @@ func GetUserProfile(id uint) User {
 	var user User
 	DB.Where(User{ID: id}).First(&user)
 	return user
+}
+
+func CheckUserAuthExist(identify string, typeValue int) bool {
+	var userAuth UserAuth
+	DB.Select("id").Where(UserAuth{Identify: identify, Type: typeValue}).First(&userAuth)
+	if userAuth.ID > 0 {
+		return true
+	}
+	return false
+}
+
+func DoRegister(identify string, typeValue int, password string, nickname string) error {
+
+	tx := DB.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	user := User{Nickname: nickname, Status: StatusEnable}
+
+	if err := tx.Create(&user).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	slat := com.RandomCreateBytes(10)
+
+	userAuth := UserAuth{
+		UserId:       user.ID,
+		Identify:     identify,
+		Password:     MakePasswordHash(password, string(slat)),
+		PasswordSalt: string(slat),
+		Type:         typeValue,
+	}
+
+	if err := tx.Create(&userAuth).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
+}
+
+func MakePasswordHash(password string, slat string) string {
+	data := []byte(fmt.Sprintf("%s%s", password, slat))
+	has := md5.Sum(data)
+	return fmt.Sprintf("%x", has) //将[]byte转成16进制
 }
