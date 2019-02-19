@@ -61,7 +61,7 @@ func DoRegister(identify string, _type int, password string, nickname string) er
 	userAuth := UserAuth{
 		UserId:       user.ID,
 		Identify:     identify,
-		Password:     MakePassword(password, string(slat)),
+		Password:     MakePasswordHash(password, string(slat)),
 		PasswordSalt: string(slat),
 		Type:         _type,
 	}
@@ -74,7 +74,7 @@ func DoRegister(identify string, _type int, password string, nickname string) er
 	return tx.Commit().Error
 }
 
-func MakePassword(password string, slat string) string {
+func MakePasswordHash(password string, slat string) string {
 	data := []byte(fmt.Sprintf("%s%s", password, slat))
 	has := md5.Sum(data)
 	return fmt.Sprintf("%x", has) //将[]byte转成16进制

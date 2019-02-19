@@ -27,7 +27,7 @@ func CheckAuth(username, password string) (UserAuth, bool) {
 	var userAuth UserAuth
 	DB.Where(UserAuth{Identify: username}).First(&userAuth)
 
-	if userAuth.ID > 0 && MakePassword(password, userAuth.PasswordSalt) == userAuth.Password {
+	if userAuth.ID > 0 && MakePasswordHash(password, userAuth.PasswordSalt) == userAuth.Password {
 		return userAuth, true
 	}
 
