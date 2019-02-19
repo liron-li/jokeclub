@@ -26,16 +26,16 @@ func (UserAuth) TableName() string {
 	return "user_auths"
 }
 
-func CheckUserAuthExist(identify string, _type int) bool {
+func CheckUserAuthExist(identify string, typeValue int) bool {
 	var userAuth UserAuth
-	DB.Select("id").Where(UserAuth{Identify: identify, Type: _type}).First(&userAuth)
+	DB.Select("id").Where(UserAuth{Identify: identify, Type: typeValue}).First(&userAuth)
 	if userAuth.ID > 0 {
 		return true
 	}
 	return false
 }
 
-func DoRegister(identify string, _type int, password string, nickname string) error {
+func DoRegister(identify string, typeValue int, password string, nickname string) error {
 
 	tx := DB.Begin()
 
@@ -63,7 +63,7 @@ func DoRegister(identify string, _type int, password string, nickname string) er
 		Identify:     identify,
 		Password:     MakePasswordHash(password, string(slat)),
 		PasswordSalt: string(slat),
-		Type:         _type,
+		Type:         typeValue,
 	}
 
 	if err := tx.Create(&userAuth).Error; err != nil {
