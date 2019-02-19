@@ -17,7 +17,7 @@ import (
  * @apiName userProfile
  * @apiGroup user
  *
- * @apiParam {string} token 页码
+ * @apiParam {string} token token
 
  * @apiSuccess {int} code  状态码 0：成功，其他表示错误
  * @apiSuccess {string} msg  消息
@@ -205,8 +205,7 @@ func Register(c *gin.Context) {
  * @api {get} /api/user/my-message 私信
  * @apiGroup user
  *
- * @apiParam {string} username 用户名称
- * @apiParam {string} password 密码
+ * @apiParam {string} token token
  *
  * @apiSuccess {int} code  状态码 0：成功，其他表示错误
  * @apiSuccess {string} msg  消息
@@ -214,8 +213,37 @@ func Register(c *gin.Context) {
  *
  * @apiSampleRequest http://localhost:8000/api/user/my-message
  */
-func MyMessage(c *gin.Context) {
-	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
+func MyMessages(c *gin.Context) {
+
+	order := "id desc"
+	maps := make(map[string]interface{})
+
+	page := c.DefaultQuery("page", "1")
+	pageSize := c.DefaultQuery("pageSize", "10")
+
+	rules := govalidator.MapData{
+		"page":     []string{"numeric", "numeric_between:1,9999999"},
+		"pageSize": []string{"numeric", "numeric_between:1,100"},
+	}
+
+	opts := govalidator.Options{
+		Request:         c.Request, // request object
+		Rules:           rules,     // rules map
+		RequiredDefault: false,     // all the field to be pass the rules
+	}
+
+	v := govalidator.New(opts)
+	res := v.Validate()
+
+	// 如果参数验证失败
+	if len(res) > 0 {
+		util.ReturnInvalidParamsJson(c, res)
+		return
+	}
+
+	data := models.MessageSessionPaginate(c, page, pageSize, maps, order)
+
+	c.JSON(http.StatusOK, util.RetJson(e.Success, data))
 }
 
 /**

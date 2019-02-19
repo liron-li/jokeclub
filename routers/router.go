@@ -30,7 +30,7 @@ func InitRouter() *gin.Engine {
 	authRoute.Use(middleware.JWT())
 	{
 		authRoute.GET("/profile", api.Profile)
-		authRoute.GET("/my-message", api.MyMessage)
+		authRoute.GET("/my-message", api.MyMessages)
 		authRoute.GET("/my-up-jokes", api.MyUpedJokes)
 		authRoute.GET("/my-favorite", api.MyFavorite)
 		authRoute.POST("/my-feedback", api.Feedback)

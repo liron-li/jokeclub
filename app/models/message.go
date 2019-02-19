@@ -1,6 +1,11 @@
 package models
 
-import "time"
+import (
+	"time"
+	"github.com/gin-gonic/gin"
+	"github.com/Unknwon/com"
+	"jokeclub/pkg/util"
+)
 
 type MessageSession struct {
 	ID          uint       `gorm:"primary_key"json:"id"`
@@ -40,4 +45,27 @@ func (MessageMap) TableName() string {
 
 func (Message) TableName() string {
 	return "messages"
+}
+
+func MessageSessionPaginate(c *gin.Context, page string, pageSize string, maps interface{}, order string) (p Paginate) {
+
+	pageInt, _ := com.StrTo(page).Int()
+	pageSizeInt, _ := com.StrTo(pageSize).Int()
+	offset := util.GetPageOffset(pageInt, pageSizeInt)
+
+	var messageSessions []MessageSession
+	DB.Order(order).Where(maps).Offset(offset).Limit(pageSize).Find(&messageSessions)
+
+	return Paginate{
+		CurrentPage: pageInt,
+		PerSize:     pageSizeInt,
+		Data:        messageSessions,
+		Total:       GetMessageSessionPaginateTotal(maps),
+		Path:        c.Request.URL.Path,
+	}
+}
+
+func GetMessageSessionPaginateTotal(maps interface{}) (count int) {
+	DB.Model(&MessageSession{}).Where(maps).Count(&count)
+	return count
 }

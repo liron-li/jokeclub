@@ -11,14 +11,6 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6bf7c40b3056f7c5f819ece5f52fa6bc33d3976b3c081443a9d0531bf7a398fb"
-  name = "github.com/astaxie/beego"
-  packages = ["validation"]
-  pruneopts = "UT"
-  revision = "b0e2bbce2a45fcfda684b47968387fa0866ada06"
-
-[[projects]]
-  branch = "master"
   digest = "1:df76b43ef08768e7831e273908426776a3034774586cca8135bcd99cd9311a97"
   name = "github.com/campoy/embedmd"
   packages = [
@@ -441,7 +433,6 @@
   analyzer-version = 1
   input-imports = [
     "github.com/Unknwon/com",
-    "github.com/astaxie/beego/validation",
     "github.com/dgrijalva/jwt-go",
     "github.com/gin-contrib/cors",
     "github.com/gin-gonic/gin",

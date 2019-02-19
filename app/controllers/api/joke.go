@@ -1,18 +1,13 @@
 package api
 
 import (
-	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"jokeclub/app/models"
 	"jokeclub/pkg/e"
 	"jokeclub/pkg/util"
 	"net/http"
+	"github.com/thedevsaddam/govalidator"
 )
-
-type paginateRequest struct {
-	Page     string `valid:"Required; MaxSize(50)"`
-	PageSize string `valid:"Required; MaxSize(50)"`
-}
 
 /**
  * @api {get} /api/jokes 获取段子列表数据
@@ -51,7 +46,6 @@ type paginateRequest struct {
  */
 func Jokes(c *gin.Context) {
 
-	var data interface{}
 	order := "id desc"
 	maps := make(map[string]interface{})
 
@@ -59,11 +53,26 @@ func Jokes(c *gin.Context) {
 	pageSize := c.DefaultQuery("pageSize", "10")
 	jokeType := c.DefaultQuery("type", "1")
 
-	valid := validation.Validation{}
-	a := paginateRequest{Page: page, PageSize: pageSize}
-	ok, _ := valid.Valid(&a)
+	rules := govalidator.MapData{
+		"page":     []string{"numeric", "numeric_between:1,9999999"},
+		"pageSize": []string{"numeric", "numeric_between:1,100"},
+		"jokeType": []string{"digits:1"},
+	}
 
-	code := e.InvalidParams
+	opts := govalidator.Options{
+		Request:         c.Request, // request object
+		Rules:           rules,     // rules map
+		RequiredDefault: false,     // all the field to be pass the rules
+	}
+
+	v := govalidator.New(opts)
+	res := v.Validate()
+
+	// 如果参数验证失败
+	if len(res) > 0 {
+		util.ReturnInvalidParamsJson(c, res)
+		return
+	}
 
 	switch jokeType {
 	case "1": // 推荐
@@ -76,12 +85,9 @@ func Jokes(c *gin.Context) {
 		maps["type"] = models.VideoTYpe
 	}
 
-	if ok {
-		data = models.JokePaginate(c, page, pageSize, maps, order)
-		code = e.Success
-	}
+	data := models.JokePaginate(c, page, pageSize, maps, order)
 
-	c.JSON(http.StatusOK, util.RetJson(code, data))
+	util.ReturnSuccessJson(c, data)
 }
 
 /**

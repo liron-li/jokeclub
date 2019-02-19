@@ -31,10 +31,6 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/astaxie/beego"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/dgrijalva/jwt-go"
 
 [[constraint]]
