@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	ID        uint       `gorm:"primary_key"json:"id"`
@@ -23,9 +25,9 @@ func (User) TableName() string {
 func CheckAuth(username, password string) (UserAuth, bool) {
 
 	var userAuth UserAuth
-	DB.Where(UserAuth{Identify:username}).First(&userAuth)
+	DB.Where(UserAuth{Identify: username}).First(&userAuth)
 
-	if userAuth.ID > 0 && MakePassword(password, userAuth.PasswordSalt) ==  userAuth.Password{
+	if userAuth.ID > 0 && MakePassword(password, userAuth.PasswordSalt) == userAuth.Password {
 		return userAuth, true
 	}
 
@@ -33,10 +35,16 @@ func CheckAuth(username, password string) (UserAuth, bool) {
 }
 
 func CheckUserExist(user User) bool {
-	var _user User
-	DB.Select("id").Where(user).First(&_user)
-	if _user.ID > 0 {
+	var userModel User
+	DB.Select("id").Where(user).First(&userModel)
+	if userModel.ID > 0 {
 		return true
 	}
 	return false
+}
+
+func GetUserProfile(id uint) User {
+	var user User
+	DB.Where(User{ID: id}).First(&user)
+	return user
 }

@@ -32,7 +32,7 @@ func Profile(c *gin.Context) {
 		c.AbortWithStatus(401)
 	}
 
-	util.ReturnSuccessJson(c, claims)
+	util.ReturnSuccessJson(c, models.GetUserProfile(claims.UserId))
 }
 
 /**
@@ -89,7 +89,7 @@ func Login(c *gin.Context) {
 
 	userAuth, isExist := models.CheckAuth(username, password)
 	if isExist {
-		token, err := util.GenerateToken(userAuth.UserId, username, password)
+		token, err := util.GenerateToken(userAuth.UserId, username)
 		if err != nil {
 			code = e.Error
 		} else {
