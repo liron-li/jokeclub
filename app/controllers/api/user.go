@@ -10,6 +10,7 @@ import (
 	"jokeclub/pkg/e"
 	"jokeclub/pkg/logging"
 	"jokeclub/pkg/util"
+	"jokeclub/pkg/cache"
 )
 
 /**
@@ -240,6 +241,10 @@ func MyMessages(c *gin.Context) {
 		util.ReturnInvalidParamsJson(c, res)
 		return
 	}
+
+	user := cache.UserProfile(c)
+
+	maps["from_user_id"] = user.ID
 
 	data := models.MessageSessionPaginate(c, page, pageSize, maps, order)
 
