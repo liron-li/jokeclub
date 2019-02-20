@@ -6,7 +6,7 @@ import (
 	"jokeclub/pkg/setting"
 )
 
-var jwtSecret = []byte(setting.JwtSecret)
+var jwtSecret = []byte(setting.AppSetting.JwtSecret)
 
 type Claims struct {
 	UserId   uint   `json:"user_id"`

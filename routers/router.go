@@ -18,7 +18,7 @@ func InitRouter() *gin.Engine {
 
 	r.LoadHTMLGlob("resources/views/*")
 
-	gin.SetMode(setting.RunMode)
+	gin.SetMode(setting.ServerSetting.RunMode)
 
 	r.GET("/", home.Index)
 

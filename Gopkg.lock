@@ -132,6 +132,17 @@
   revision = "1d3f30b51784bec5aad268e59fd3c2fc1c2fe73f"
 
 [[projects]]
+  digest = "1:38ec74012390146c45af1f92d46e5382b50531247929ff3a685d2b2be65155ac"
+  name = "github.com/gomodule/redigo"
+  packages = [
+    "internal",
+    "redis",
+  ]
+  pruneopts = "UT"
+  revision = "9c11da706d9b7902c6da69c592f75637793fe121"
+  version = "v2.0.0"
+
+[[projects]]
   branch = "master"
   digest = "1:446f04b6b59c2cfacf8e9784c431afda6708d72a7a09eaefb2ab96d2b9cf8536"
   name = "github.com/jessevdk/go-assets"
@@ -437,6 +448,7 @@
     "github.com/gin-contrib/cors",
     "github.com/gin-gonic/gin",
     "github.com/go-ini/ini",
+    "github.com/gomodule/redigo/redis",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
     "github.com/robfig/cron",
