@@ -14,12 +14,14 @@ import (
 	"jokeclub/database/migration"
 	"jokeclub/pkg/setting"
 	"jokeclub/routers"
+	"jokeclub/app/models"
 )
 
 var action = flag.String("action", "serve", "action")
 
 func init()  {
 	setting.Setup()
+	models.Setup()
 }
 
 func main() {
