@@ -18,6 +18,10 @@ import (
 
 var action = flag.String("action", "serve", "action")
 
+func init()  {
+	setting.Setup()
+}
+
 func main() {
 
 	flag.Parse()

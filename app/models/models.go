@@ -22,18 +22,18 @@ type Model struct {
 
 func Setup() {
 	var err error
-	DB, err = gorm.Open(setting.DatabaseSetting.DbConnection, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		setting.DatabaseSetting.DbUsername,
-		setting.DatabaseSetting.DbPassword,
-		setting.DatabaseSetting.DbHost,
-		setting.DatabaseSetting.DbDatabase))
+	DB, err = gorm.Open(setting.DatabaseSetting.Connection, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		setting.DatabaseSetting.Username,
+		setting.DatabaseSetting.Password,
+		setting.DatabaseSetting.Host,
+		setting.DatabaseSetting.Database))
 
 	if err != nil {
 		log.Fatalf("models.Setup err: %v", err)
 	}
 
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return setting.DatabaseSetting.DbTablePrefix + defaultTableName
+		return setting.DatabaseSetting.TablePrefix + defaultTableName
 	}
 
 	DB.SingularTable(true)
