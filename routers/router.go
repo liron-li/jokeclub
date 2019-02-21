@@ -31,6 +31,7 @@ func InitRouter() *gin.Engine {
 	{
 		authRoute.GET("/profile", api.Profile)
 		authRoute.GET("/my-message", api.MyMessages)
+		authRoute.POST("/send-message", api.SendMessage)
 		authRoute.GET("/my-up-jokes", api.MyUpedJokes)
 		authRoute.GET("/my-favorite", api.MyFavorite)
 		authRoute.POST("/my-feedback", api.Feedback)

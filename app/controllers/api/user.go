@@ -248,7 +248,24 @@ func MyMessages(c *gin.Context) {
 
 	data := models.MessageSessionPaginate(c, page, pageSize, maps, order)
 
-	c.JSON(http.StatusOK, util.RetJson(e.Success, data))
+
+	util.ReturnSuccessJson(c, data)
+}
+
+/**
+ * @api {post} /api/user/send-message 发送私信
+ * @apiGroup user
+ *
+ * @apiParam {string} token token
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/user/send-message
+ */
+func SendMessage(c *gin.Context) {
+	util.ReturnSuccessJson(c, []int{})
 }
 
 /**
