@@ -257,7 +257,7 @@ func MyMessages(c *gin.Context) {
  * @apiGroup user
  *
  * @apiParam {string} token token
- *
+
  * @apiSuccess {int} code  状态码 0：成功，其他表示错误
  * @apiSuccess {string} msg  消息
  * @apiSuccess {array} data  数据体
