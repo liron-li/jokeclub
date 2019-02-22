@@ -18,6 +18,10 @@ func JWT() gin.HandlerFunc {
 		code = e.Success
 		token := c.Query("token")
 		if token == "" {
+			token = c.PostForm("token")
+		}
+
+		if token == "" {
 			code = e.InvalidParams
 		} else {
 			claims, err := util.ParseToken(token)
