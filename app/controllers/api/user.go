@@ -248,7 +248,6 @@ func MyMessages(c *gin.Context) {
 
 	data := models.MessageSessionPaginate(c, page, pageSize, maps, order)
 
-
 	util.ReturnSuccessJson(c, data)
 }
 
@@ -257,7 +256,11 @@ func MyMessages(c *gin.Context) {
  * @apiGroup user
  *
  * @apiParam {string} token token
-
+ * @apiParam {int} session_id 会话id
+ * @apiParam {int} from_user_id from_user_id
+ * @apiParam {int} to_user_id to_user_id
+ * @apiParam {string} content 消息正文
+ *
  * @apiSuccess {int} code  状态码 0：成功，其他表示错误
  * @apiSuccess {string} msg  消息
  * @apiSuccess {array} data  数据体
@@ -265,7 +268,36 @@ func MyMessages(c *gin.Context) {
  * @apiSampleRequest http://localhost:8000/api/user/send-message
  */
 func SendMessage(c *gin.Context) {
-	util.ReturnSuccessJson(c, []int{})
+
+	sessionId := c.DefaultPostForm("session_id", "0")
+	fromUserId := c.PostForm("from_user_id")
+	toUserId := c.PostForm("to_user_id")
+	content := c.PostForm("content")
+
+	rules := govalidator.MapData{
+		"session_id":   []string{"numeric"},
+		"from_user_id": []string{"numeric"},
+		"to_user_id":   []string{"numeric"},
+		"content":      []string{"required", "max:500"},
+	}
+
+	opts := govalidator.Options{
+		Request:         c.Request, // request object
+		Rules:           rules,     // rules map
+		RequiredDefault: false,     // all the field to be pass the rules
+	}
+
+	v := govalidator.New(opts)
+	res := v.Validate()
+
+	// 如果参数验证失败
+	if len(res) > 0 {
+		util.ReturnInvalidParamsJson(c, res)
+		return
+	}
+
+
+	util.ReturnSuccessJson(c, []string{sessionId, fromUserId, toUserId, content})
 }
 
 /**

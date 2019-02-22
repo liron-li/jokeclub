@@ -69,3 +69,7 @@ func GetMessageSessionPaginateTotal(maps interface{}) (count int) {
 	DB.Model(&MessageSession{}).Where(maps).Count(&count)
 	return count
 }
+
+func SendMessage(sessionId string, fromUserId string, toUserId string, content string) {
+
+}
