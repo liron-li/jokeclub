@@ -12,7 +12,7 @@ const (
 )
 
 func UserProfile(c *gin.Context) models.User {
-	token := c.Query("token")
+	token := util.GetToken(c)
 	claims, err := util.ParseToken(token)
 	if err != nil {
 		c.AbortWithStatus(401)

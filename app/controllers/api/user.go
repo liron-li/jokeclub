@@ -203,7 +203,7 @@ func Register(c *gin.Context) {
 }
 
 /**
- * @api {get} /api/user/my-message 私信
+ * @api {get} /api/user/messages 私信
  * @apiGroup user
  *
  * @apiParam {string} token token
@@ -212,9 +212,9 @@ func Register(c *gin.Context) {
  * @apiSuccess {string} msg  消息
  * @apiSuccess {array} data  数据体
  *
- * @apiSampleRequest http://localhost:8000/api/user/my-message
+ * @apiSampleRequest http://localhost:8000/api/user/messages
  */
-func MyMessages(c *gin.Context) {
+func Messages(c *gin.Context) {
 
 	order := "id desc"
 	maps := make(map[string]interface{})

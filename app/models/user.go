@@ -15,9 +15,9 @@ const (
 type User struct {
 	ID        int        `gorm:"primary_key"json:"id"`
 	Nickname  string     `json:"nickname"`
-	Email     string     `gorm:"default:null"json:"email"`
-	PhoneArea string     `gorm:"default:'86'"json:"phone_area"`
-	Phone     string     `gorm:"default:null"json:"phone"`
+	Email     string     `gorm:"default:null"json:"-"`
+	PhoneArea string     `gorm:"default:'86'"json:"-"`
+	Phone     string     `gorm:"default:null"json:"-"`
 	Avatar    string     `json:"avatar"`
 	Slogan    string     `json:"slogan"`
 	Status    int        `json:"-"`

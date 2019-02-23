@@ -2,17 +2,18 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/thedevsaddam/govalidator"
 	"jokeclub/app/models"
 	"jokeclub/pkg/e"
 	"jokeclub/pkg/util"
 	"net/http"
-	"github.com/thedevsaddam/govalidator"
 )
 
 /**
  * @api {get} /api/jokes 获取段子列表数据
  * @apiGroup jokes
  *
+ * @apiParam {string} token token
  * @apiParam {int} [page] 页码
  * @apiParam {int} [pageSize] 每页条数
  * @apiParam {int} [type] 1:推荐 2：最新 3：图片 4：视频
@@ -91,19 +92,41 @@ func Jokes(c *gin.Context) {
 }
 
 /**
- * @api {post} /api/jokes/up 支持
- * @apiGroup jokes
- *
- * @apiParam {string} username 用户名称
- * @apiParam {string} password 密码
- *
- * @apiSuccess {int} code  状态码 0：成功，其他表示错误
- * @apiSuccess {string} msg  消息
- * @apiSuccess {array} data  数据体
- *
- * @apiSampleRequest http://localhost:8000/api/jokes/up
+* @api {post} /api/user/up 支持
+* @apiGroup jokes
+*
+* @apiParam {string} token token
+* @apiParam {int} joke_id 段子id
+*
+* @apiSuccess {int} code  状态码 0：成功，其他表示错误
+* @apiSuccess {string} msg  消息
+* @apiSuccess {array} data  数据体
+*
+* @apiSampleRequest http://localhost:8000/api/jokes/up
  */
 func JokeUp(c *gin.Context) {
+
+	jokeId := c.PostForm("joke_id")
+
+	rules := govalidator.MapData{
+		"joke_id": []string{"numeric", "required"},
+	}
+
+	opts := govalidator.Options{
+		Request:         c.Request, // request object
+		Rules:           rules,     // rules map
+		RequiredDefault: false,     // all the field to be pass the rules
+	}
+
+	v := govalidator.New(opts)
+	res := v.Validate()
+
+	// 如果参数验证失败
+	if len(res) > 0 {
+		util.ReturnInvalidParamsJson(c, res)
+		return
+	}
+
 	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
 }
 

@@ -11,7 +11,9 @@ import (
 type MessageSession struct {
 	ID          int        `gorm:"primary_key"json:"id"`
 	FromUserId  int        `json:"from_user_id"`
+	FromUser    User       `json:"from_user"gorm:"foreignkey:FromUserId"`
 	ToUserId    int        `json:"to_user_id"`
+	ToUser      User       `json:"to_user"gorm:"foreignkey:ToUserId"`
 	LastMessage string     `json:"last_message"`
 	IsRead      int        `json:"is_read"gorm:"default:'0'"`
 	CreatedAt   time.Time  `json:"created_at"`
@@ -31,6 +33,7 @@ type MessageMap struct {
 type Message struct {
 	ID        int        `gorm:"primary_key"json:"id"`
 	UserId    int        `json:"user_id"`
+	User      User       `json:"user"`
 	Content   string     `json:"content"`
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"-"`
@@ -56,7 +59,7 @@ func MessageSessionPaginate(c *gin.Context, page string, pageSize string, maps i
 	offset := util.GetPageOffset(pageInt, pageSizeInt)
 
 	var messageSessions []MessageSession
-	DB.Order(order).Where(maps).Offset(offset).Limit(pageSize).Find(&messageSessions)
+	DB.Order(order).Preload("FromUser").Preload("ToUser").Where(maps).Offset(offset).Limit(pageSize).Find(&messageSessions)
 
 	return Paginate{
 		CurrentPage: pageInt,

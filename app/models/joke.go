@@ -56,3 +56,10 @@ func GetJokePaginateTotal(maps interface{}) (count int) {
 	DB.Model(&Joke{}).Where(maps).Count(&count)
 	return count
 }
+
+func JokeUp(id int, cancel bool) {
+	var joke Joke
+	DB.Where(Joke{ID: id}).First(&joke)
+	joke.UpNum += 1
+	DB.Save(&joke)
+}

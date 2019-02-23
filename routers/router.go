@@ -26,27 +26,22 @@ func InitRouter() *gin.Engine {
 	r.POST("/api/login", api.Login)
 	r.POST("/api/register", api.Register)
 
-	authRoute := r.Group("/api/user")
-	authRoute.Use(middleware.JWT())
+	apiRoute := r.Group("/api")
+	apiRoute.Use(middleware.JWT())
 	{
-		authRoute.GET("/profile", api.Profile)
-		authRoute.GET("/my-message", api.MyMessages)
-		authRoute.POST("/send-message", api.SendMessage)
-		authRoute.GET("/my-up-jokes", api.MyUpedJokes)
-		authRoute.GET("/my-favorite", api.MyFavorite)
-		authRoute.POST("/my-feedback", api.Feedback)
-	}
+		apiRoute.GET("/user/profile", api.Profile)
+		apiRoute.GET("/user/messages", api.Messages)
+		apiRoute.POST("/user/send-message", api.SendMessage)
+		apiRoute.GET("/user/my-up-jokes", api.MyUpedJokes)
+		apiRoute.GET("/user/my-favorite", api.MyFavorite)
+		apiRoute.POST("/user/my-feedback", api.Feedback)
 
-	jokeRoute := r.Group("/api/jokes")
-
-	jokeRoute.Use()
-	{
-		jokeRoute.GET("", api.Jokes)
-		jokeRoute.POST("/up", api.JokeUp)
-		jokeRoute.POST("/down", api.JokeDown)
-		jokeRoute.POST("/favorite", api.JokeFavorite)
-		jokeRoute.GET("/comments", api.Comments)
-		jokeRoute.POST("/comments", api.PostComments)
+		apiRoute.GET("/jokes", api.Jokes)
+		apiRoute.POST("/joke/up", api.JokeUp)
+		apiRoute.POST("/joke/down", api.JokeDown)
+		apiRoute.POST("/joke/favorite", api.JokeFavorite)
+		apiRoute.GET("/joke/comments", api.Comments)
+		apiRoute.POST("/joke/comments", api.PostComments)
 	}
 
 	return r
