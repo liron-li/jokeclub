@@ -14,7 +14,7 @@ const (
 )
 
 type Joke struct {
-	ID          uint       `gorm:"primary_key"json:"id"`
+	ID          int        `gorm:"primary_key"json:"id"`
 	UserId      string     `json:"user_id"`
 	User        User       `json:"user"`
 	Content     string     `json:"content"`

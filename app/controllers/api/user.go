@@ -7,10 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 	"jokeclub/app/models"
+	"jokeclub/pkg/cache"
 	"jokeclub/pkg/e"
 	"jokeclub/pkg/logging"
 	"jokeclub/pkg/util"
-	"jokeclub/pkg/cache"
 )
 
 /**
@@ -257,7 +257,6 @@ func MyMessages(c *gin.Context) {
  *
  * @apiParam {string} token token
  * @apiParam {int} session_id 会话id
- * @apiParam {int} from_user_id from_user_id
  * @apiParam {int} to_user_id to_user_id
  * @apiParam {string} content 消息正文
  *
@@ -269,16 +268,13 @@ func MyMessages(c *gin.Context) {
  */
 func SendMessage(c *gin.Context) {
 
-	sessionId := c.DefaultPostForm("session_id", "0")
-	fromUserId := c.PostForm("from_user_id")
-	toUserId := c.PostForm("to_user_id")
-	content := c.PostForm("content")
+	token := util.GetToken(c)
+	claims, _ := util.ParseToken(token)
 
 	rules := govalidator.MapData{
-		"session_id":   []string{"numeric"},
-		"from_user_id": []string{"numeric"},
-		"to_user_id":   []string{"numeric"},
-		"content":      []string{"required", "max:500"},
+		"session_id": []string{"numeric"},
+		"to_user_id": []string{"numeric"},
+		"content":    []string{"required", "max:500"},
 	}
 
 	opts := govalidator.Options{
@@ -296,8 +292,22 @@ func SendMessage(c *gin.Context) {
 		return
 	}
 
+	content := c.PostForm("content")
+	sessionId, err1 := com.StrTo(c.PostForm("session_id")).Int()
+	toUserId, err2 := com.StrTo(c.PostForm("to_user_id")).Int()
 
-	util.ReturnSuccessJson(c, []string{sessionId, fromUserId, toUserId, content})
+	if err1 != nil || err2 != nil {
+		logging.Error(err1, err2)
+		util.ReturnErrorJson(c, e.Error)
+		return
+	}
+
+	if !models.SendMessage(sessionId, claims.UserId, toUserId, content) {
+		util.ReturnErrorJson(c, e.Error)
+		return
+	}
+
+	util.ReturnSuccessJson(c, nil)
 }
 
 /**

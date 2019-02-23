@@ -1,10 +1,10 @@
 package models
 
 import (
-	"time"
-	"github.com/Unknwon/com"
-	"fmt"
 	"crypto/md5"
+	"fmt"
+	"github.com/Unknwon/com"
+	"time"
 )
 
 const (
@@ -13,7 +13,7 @@ const (
 )
 
 type User struct {
-	ID        uint       `gorm:"primary_key"json:"id"`
+	ID        int        `gorm:"primary_key"json:"id"`
 	Nickname  string     `json:"nickname"`
 	Email     string     `gorm:"default:null"json:"email"`
 	PhoneArea string     `gorm:"default:'86'"json:"phone_area"`
@@ -28,7 +28,7 @@ type User struct {
 
 type UserAuth struct {
 	ID            int       `gorm:"primary_key"json:"id"`
-	UserId        uint      `json:"user_id"`
+	UserId        int       `json:"user_id"`
 	Identify      string    `json:"identify"`
 	Password      string    `json:"-"`
 	RememberToken string    `json:"-"`
@@ -67,7 +67,7 @@ func CheckUserExist(user User) bool {
 	return false
 }
 
-func GetUserProfile(id uint) User {
+func GetUserProfile(id int) User {
 	var user User
 	DB.Where(User{ID: id}).First(&user)
 	return user
