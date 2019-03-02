@@ -7,6 +7,8 @@ import (
 	"jokeclub/pkg/e"
 	"jokeclub/pkg/util"
 	"net/http"
+	"src/github.com/Unknwon/com"
+	"jokeclub/pkg/cache"
 )
 
 /**
@@ -97,19 +99,19 @@ func Jokes(c *gin.Context) {
 *
 * @apiParam {string} token token
 * @apiParam {int} joke_id 段子id
+* @apiParam {int} cancel 是否取消 0：否 1:是
 *
 * @apiSuccess {int} code  状态码 0：成功，其他表示错误
 * @apiSuccess {string} msg  消息
 * @apiSuccess {array} data  数据体
 *
-* @apiSampleRequest http://localhost:8000/api/jokes/up
+* @apiSampleRequest http://localhost:8000/api/joke/up
  */
 func JokeUp(c *gin.Context) {
 
-	jokeId := c.PostForm("joke_id")
-
 	rules := govalidator.MapData{
 		"joke_id": []string{"numeric", "required"},
+		"cancel":  []string{"numeric"},
 	}
 
 	opts := govalidator.Options{
@@ -125,6 +127,26 @@ func JokeUp(c *gin.Context) {
 	if len(res) > 0 {
 		util.ReturnInvalidParamsJson(c, res)
 		return
+	}
+
+	jokeId := c.PostForm("joke_id")
+	cancel := c.DefaultPostForm("cancel", "0")
+
+	idInt, err := com.StrTo(jokeId).Int()
+	joke := models.GetJoke(idInt)
+
+	if joke.ID <= 0 || err != nil {
+		util.ReturnErrorJson(c, e.Error)
+		c.Abort()
+		return
+	}
+
+	user := cache.UserProfile(c)
+
+	if cancel != "0" {
+		joke.Up(user.ID, true)
+	} else {
+		joke.Up(user.ID, false)
 	}
 
 	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))

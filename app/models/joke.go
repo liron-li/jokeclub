@@ -57,9 +57,29 @@ func GetJokePaginateTotal(maps interface{}) (count int) {
 	return count
 }
 
-func JokeUp(id int, cancel bool) {
+func GetJoke(id int) Joke {
 	var joke Joke
 	DB.Where(Joke{ID: id}).First(&joke)
-	joke.UpNum += 1
+	return joke
+}
+
+func (joke Joke) Up(userId int, cancel bool) {
+	if cancel {
+		var like Like
+		DB.Where(Like{UserId: userId, JokeId: joke.ID}).First(&like)
+		DB.Delete(&like)
+		joke.UpNum -= 1
+	} else {
+		var like Like
+		DB.FirstOrCreate(&like, Like{JokeId: joke.ID, UserId: userId})
+		joke.UpNum += 1
+	}
+
+	DB.Save(&joke)
+
+}
+
+func (joke Joke) Down() {
+	joke.DownNum += 1
 	DB.Save(&joke)
 }
