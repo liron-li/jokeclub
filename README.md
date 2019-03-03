@@ -27,3 +27,8 @@ go build -ldflags "-s -w"
 ```
    apidoc -i app/controllers/api -o apidoc/
 ```
+
+5.交叉编译
+```
+CGO_ENABLED=0 GOOS=linux go build  -a -installsuffix cgo -o jokeclub .
+```

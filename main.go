@@ -15,6 +15,7 @@ import (
 	"jokeclub/pkg/setting"
 	"jokeclub/routers"
 	"jokeclub/app/models"
+	"github.com/gin-gonic/gin"
 )
 
 var action = flag.String("action", "serve", "action")
@@ -36,6 +37,8 @@ func main() {
 		migration.Migration()
 		return
 	}
+
+	gin.SetMode(setting.ServerSetting.RunMode)
 
 	router := routers.InitRouter()
 

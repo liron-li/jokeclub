@@ -6,7 +6,6 @@ import (
 	"jokeclub/app/controllers/api"
 	"jokeclub/app/controllers/home"
 	"jokeclub/app/middleware"
-	"jokeclub/pkg/setting"
 )
 
 func InitRouter() *gin.Engine {
@@ -16,9 +15,7 @@ func InitRouter() *gin.Engine {
 
 	r.Use(gin.Recovery())
 
-	r.LoadHTMLGlob("resources/views/*")
-
-	gin.SetMode(setting.ServerSetting.RunMode)
+	//r.LoadHTMLGlob("resources/views/*")
 
 	r.GET("/", home.Index)
 
