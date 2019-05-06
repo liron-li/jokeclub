@@ -3,7 +3,7 @@ package models
 import (
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
-	"goweb/pkg/logging"
+	"jokeclub/pkg/logging"
 	"jokeclub/pkg/util"
 	"time"
 )

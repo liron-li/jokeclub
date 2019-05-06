@@ -7,7 +7,7 @@ import (
 	"jokeclub/pkg/e"
 	"jokeclub/pkg/util"
 	"net/http"
-	"src/github.com/Unknwon/com"
+	"github.com/Unknwon/com"
 	"jokeclub/pkg/cache"
 )
 
