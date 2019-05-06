@@ -52,7 +52,7 @@ func Setup() {
 	var err error
 	cfg, err = ini.Load(".env")
 	if err != nil {
-		log.Fatalf("setting.Setup, fail to parse 'conf/app.ini': %v", err)
+		log.Fatalf("setting.Setup, fail to parse '.env': %v", err)
 	}
 
 	mapTo("app", AppSetting)
