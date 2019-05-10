@@ -361,11 +361,10 @@ func SendMessage(c *gin.Context) {
 }
 
 /**
- * @api {get} /api/user/my-up-jokes 我赞过的
+ * @api {get} /api/user/up-jokes 我赞过的
  * @apiGroup user
  *
- * @apiParam {string} username 用户名称
- * @apiParam {string} password 密码
+ * @apiParam {string} token token
  *
  * @apiSuccess {int} code  状态码 0：成功，其他表示错误
  * @apiSuccess {string} msg  消息
@@ -378,11 +377,12 @@ func UpedJokes(c *gin.Context) {
 }
 
 /**
- * @api {get} /api/user/my-favorite 我的收藏
+ * @api {get} /api/user/favorite 我的收藏
  * @apiGroup user
  *
- * @apiParam {string} username 用户名称
- * @apiParam {string} password 密码
+ * @apiParam {string} token token
+ * @apiParam {string} page 页码
+ * @apiParam {string} pageSize 每页条数
  *
  * @apiSuccess {int} code  状态码 0：成功，其他表示错误
  * @apiSuccess {string} msg  消息
@@ -391,7 +391,40 @@ func UpedJokes(c *gin.Context) {
  * @apiSampleRequest http://localhost:8000/api/user/favorite
  */
 func Favorite(c *gin.Context) {
-	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
+
+	token := util.GetToken(c)
+	claims, _ := util.ParseToken(token)
+	order := "id desc"
+
+	maps := make(map[string]interface{})
+	page := c.DefaultQuery("page", "1")
+	pageSize := c.DefaultQuery("pageSize", "10")
+
+	rules := govalidator.MapData{
+		"page":     []string{"numeric", "numeric_between:1,9999999"},
+		"pageSize": []string{"numeric", "numeric_between:1,100"},
+	}
+
+	opts := govalidator.Options{
+		Request:         c.Request, // request object
+		Rules:           rules,     // rules map
+		RequiredDefault: false,     // all the field to be pass the rules
+	}
+
+	v := govalidator.New(opts)
+	res := v.Validate()
+
+	// 如果参数验证失败
+	if len(res) > 0 {
+		util.ReturnInvalidParamsJson(c, res)
+		return
+	}
+
+	maps["user_id"] = claims.UserId
+
+	data := models.FavoritePaginate(c, page, pageSize, maps, order)
+
+	util.ReturnSuccessJson(c, data)
 }
 
 /**
