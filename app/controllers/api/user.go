@@ -29,6 +29,7 @@ func Profile(c *gin.Context) {
 	claims, err := util.ParseToken(token)
 	if err != nil {
 		c.AbortWithStatus(401)
+		return
 	}
 
 	util.ReturnSuccessJson(c, models.GetUserProfile(claims.UserId))
