@@ -25,6 +25,7 @@ type MessageMap struct {
 	ID               int        `gorm:"primary_key"json:"id"`
 	MessageSessionId int        `json:"message_session_id"`
 	MessageId        int        `json:"message_id"`
+	Message          Message    `json:"message"gorm:"foreignkey:MessageId"`
 	CreatedAt        time.Time  `json:"created_at"`
 	UpdatedAt        time.Time  `json:"-"`
 	DeletedAt        *time.Time `json:"-"`
@@ -52,6 +53,29 @@ func (Message) TableName() string {
 	return "messages"
 }
 
+func MessageDetailsPaginate(c *gin.Context, page string, pageSize string, maps interface{}) (p Paginate) {
+
+	pageInt, _ := com.StrTo(page).Int()
+	pageSizeInt, _ := com.StrTo(pageSize).Int()
+	offset := util.GetPageOffset(pageInt, pageSizeInt)
+
+	var messageMaps []MessageMap
+	DB.Preload("Message").Where(maps).Offset(offset).Limit(pageSize).Find(&messageMaps)
+
+	return Paginate{
+		CurrentPage: pageInt,
+		PerSize:     pageSizeInt,
+		Data:        messageMaps,
+		Total:       messageDetailsPaginateTotal(maps),
+		Path:        c.Request.URL.Path,
+	}
+}
+
+func messageDetailsPaginateTotal(maps interface{}) (count int) {
+	DB.Model(&MessageMap{}).Where(maps).Count(&count)
+	return count
+}
+
 func MessageSessionPaginate(c *gin.Context, page string, pageSize string, maps interface{}, order string) (p Paginate) {
 
 	pageInt, _ := com.StrTo(page).Int()
@@ -65,12 +89,12 @@ func MessageSessionPaginate(c *gin.Context, page string, pageSize string, maps i
 		CurrentPage: pageInt,
 		PerSize:     pageSizeInt,
 		Data:        messageSessions,
-		Total:       GetMessageSessionPaginateTotal(maps),
+		Total:       getMessageSessionPaginateTotal(maps),
 		Path:        c.Request.URL.Path,
 	}
 }
 
-func GetMessageSessionPaginateTotal(maps interface{}) (count int) {
+func getMessageSessionPaginateTotal(maps interface{}) (count int) {
 	DB.Model(&MessageSession{}).Where(maps).Count(&count)
 	return count
 }

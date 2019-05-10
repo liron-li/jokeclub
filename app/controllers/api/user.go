@@ -203,10 +203,12 @@ func Register(c *gin.Context) {
 }
 
 /**
- * @api {get} /api/user/messages 私信
+ * @api {get} /api/user/messages 私信会话列表
  * @apiGroup user
  *
  * @apiParam {string} token token
+ * @apiParam {string} page 页码
+ * @apiParam {string} pageSize 每页条数
  *
  * @apiSuccess {int} code  状态码 0：成功，其他表示错误
  * @apiSuccess {string} msg  消息
@@ -247,6 +249,54 @@ func Messages(c *gin.Context) {
 	maps["from_user_id"] = user.ID
 
 	data := models.MessageSessionPaginate(c, page, pageSize, maps, order)
+
+	util.ReturnSuccessJson(c, data)
+}
+
+/**
+ * @api {get} /api/user/messages/{session_id} 私信详情
+ * @apiGroup user
+ *
+ * @apiParam {string} token token
+ * @apiParam {string} page 页码
+ * @apiParam {string} pageSize 每页条数
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/user/messages/{session_id}
+ */
+func MessageDetails(c *gin.Context) {
+
+	sessionId := c.Param("session_id")
+	maps := make(map[string]interface{})
+	page := c.DefaultQuery("page", "1")
+	pageSize := c.DefaultQuery("pageSize", "10")
+
+	rules := govalidator.MapData{
+		"page":     []string{"numeric", "numeric_between:1,9999999"},
+		"pageSize": []string{"numeric", "numeric_between:1,100"},
+	}
+
+	opts := govalidator.Options{
+		Request:         c.Request, // request object
+		Rules:           rules,     // rules map
+		RequiredDefault: false,     // all the field to be pass the rules
+	}
+
+	v := govalidator.New(opts)
+	res := v.Validate()
+
+	// 如果参数验证失败
+	if len(res) > 0 {
+		util.ReturnInvalidParamsJson(c, res)
+		return
+	}
+
+	maps["message_session_id"] = sessionId
+
+	data := models.MessageDetailsPaginate(c, page, pageSize, maps)
 
 	util.ReturnSuccessJson(c, data)
 }

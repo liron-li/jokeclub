@@ -28,6 +28,7 @@ func InitRouter() *gin.Engine {
 	{
 		apiRoute.GET("/user/profile", api.Profile)
 		apiRoute.GET("/user/messages", api.Messages)
+		apiRoute.GET("/user/messages/:session_id", api.MessageDetails)
 		apiRoute.POST("/user/send-message", api.SendMessage)
 		apiRoute.GET("/user/my-up-jokes", api.MyUpedJokes)
 		apiRoute.GET("/user/my-favorite", api.MyFavorite)
