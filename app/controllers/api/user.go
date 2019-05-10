@@ -191,15 +191,15 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	errors := models.DoRegister(identify, typeInt, password, nickname)
+	err, userAuth := models.DoRegister(identify, typeInt, password, nickname)
 
-	if errors != nil {
-		logging.Error(errors)
+	if err != nil {
+		logging.Error(err)
 		util.ReturnErrorJson(c, e.Error)
 		return
 	}
 
-	util.ReturnSuccessJson(c, nil)
+	util.ReturnSuccessJson(c, userAuth)
 }
 
 /**

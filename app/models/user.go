@@ -82,7 +82,7 @@ func CheckUserAuthExist(identify string, typeValue int) bool {
 	return false
 }
 
-func DoRegister(identify string, typeValue int, password string, nickname string) error {
+func DoRegister(identify string, typeValue int, password string, nickname string) (error, UserAuth) {
 
 	tx := DB.Begin()
 
@@ -93,14 +93,14 @@ func DoRegister(identify string, typeValue int, password string, nickname string
 	}()
 
 	if err := tx.Error; err != nil {
-		return err
+		return err, UserAuth{}
 	}
 
 	user := User{Nickname: nickname, Status: StatusEnable}
 
 	if err := tx.Create(&user).Error; err != nil {
 		tx.Rollback()
-		return err
+		return err, UserAuth{}
 	}
 
 	slat := com.RandomCreateBytes(10)
@@ -115,10 +115,10 @@ func DoRegister(identify string, typeValue int, password string, nickname string
 
 	if err := tx.Create(&userAuth).Error; err != nil {
 		tx.Rollback()
-		return err
+		return err, UserAuth{}
 	}
 
-	return tx.Commit().Error
+	return tx.Commit().Error, userAuth
 }
 
 func MakePasswordHash(password string, slat string) string {
