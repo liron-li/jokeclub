@@ -30,9 +30,9 @@ func InitRouter() *gin.Engine {
 		apiRoute.GET("/user/messages", api.Messages)
 		apiRoute.GET("/user/messages/:session_id", api.MessageDetails)
 		apiRoute.POST("/user/send-message", api.SendMessage)
-		apiRoute.GET("/user/my-up-jokes", api.MyUpedJokes)
-		apiRoute.GET("/user/my-favorite", api.MyFavorite)
-		apiRoute.POST("/user/my-feedback", api.Feedback)
+		apiRoute.GET("/user/up-jokes", api.UpedJokes)
+		apiRoute.GET("/user/favorite", api.Favorite)
+		apiRoute.POST("/user/feedback", api.Feedback)
 
 		apiRoute.GET("/jokes", api.Jokes)
 		apiRoute.POST("/joke/up", api.JokeUp)

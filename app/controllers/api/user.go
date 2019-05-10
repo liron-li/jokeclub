@@ -371,9 +371,9 @@ func SendMessage(c *gin.Context) {
  * @apiSuccess {string} msg  消息
  * @apiSuccess {array} data  数据体
  *
- * @apiSampleRequest http://localhost:8000/api/user/my-up-jokes
+ * @apiSampleRequest http://localhost:8000/api/user/up-jokes
  */
-func MyUpedJokes(c *gin.Context) {
+func UpedJokes(c *gin.Context) {
 	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
 }
 
@@ -388,25 +388,55 @@ func MyUpedJokes(c *gin.Context) {
  * @apiSuccess {string} msg  消息
  * @apiSuccess {array} data  数据体
  *
- * @apiSampleRequest http://localhost:8000/api/user/my-favorite
+ * @apiSampleRequest http://localhost:8000/api/user/favorite
  */
-func MyFavorite(c *gin.Context) {
+func Favorite(c *gin.Context) {
 	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
 }
 
 /**
- * @api {get} /api/user/my-feedback 意见反馈
+ * @api {post} /api/user/feedback 意见反馈
  * @apiGroup user
  *
- * @apiParam {string} username 用户名称
- * @apiParam {string} password 密码
+ * @apiParam {string} token token
+ * @apiParam {string} content 内容
  *
  * @apiSuccess {int} code  状态码 0：成功，其他表示错误
  * @apiSuccess {string} msg  消息
  * @apiSuccess {array} data  数据体
  *
- * @apiSampleRequest http://localhost:8000/api/user/my-feedback
+ * @apiSampleRequest http://localhost:8000/api/user/feedback
  */
 func Feedback(c *gin.Context) {
-	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
+
+	token := util.GetToken(c)
+	claims, _ := util.ParseToken(token)
+
+	rules := govalidator.MapData{
+		"content":    []string{"required", "max:500"},
+	}
+
+	opts := govalidator.Options{
+		Request:         c.Request, // request object
+		Rules:           rules,     // rules map
+		RequiredDefault: false,     // all the field to be pass the rules
+	}
+
+	v := govalidator.New(opts)
+	res := v.Validate()
+
+	// 如果参数验证失败
+	if len(res) > 0 {
+		util.ReturnInvalidParamsJson(c, res)
+		return
+	}
+
+	content := c.PostForm("content")
+
+	if !models.SendFeedback(claims.UserId, content) {
+		util.ReturnErrorJson(c, e.Error)
+		return
+	}
+
+	util.ReturnSuccessJson(c, nil)
 }
