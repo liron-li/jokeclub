@@ -214,8 +214,9 @@ func JokeDown(c *gin.Context) {
  * @api {post} /api/jokes/favorite 收藏
  * @apiGroup jokes
  *
- * @apiParam {string} username 用户名称
- * @apiParam {string} password 密码
+ * @apiParam {string} token token
+ * @apiParam {int} joke_id 段子id
+ * @apiParam {int} cancel 是否取消 0：否 1:是
  *
  * @apiSuccess {int} code  状态码 0：成功，其他表示错误
  * @apiSuccess {string} msg  消息
