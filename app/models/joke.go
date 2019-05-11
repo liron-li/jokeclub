@@ -64,13 +64,13 @@ func GetJoke(id int) Joke {
 }
 
 func (joke Joke) Up(userId int, cancel bool) {
+	var like Like
+
 	if cancel {
-		var like Like
 		DB.Where(Like{UserId: userId, JokeId: joke.ID}).First(&like)
 		DB.Delete(&like)
 		joke.UpNum -= 1
 	} else {
-		var like Like
 		DB.FirstOrCreate(&like, Like{JokeId: joke.ID, UserId: userId})
 		joke.UpNum += 1
 	}
@@ -79,7 +79,16 @@ func (joke Joke) Up(userId int, cancel bool) {
 
 }
 
-func (joke Joke) Down() {
-	joke.DownNum += 1
+func (joke Joke) Down(userId int, cancel bool) {
+	var down Down
+	if cancel {
+		DB.Where(Like{UserId: userId, JokeId: joke.ID}).First(&down)
+		DB.Delete(&down)
+		joke.DownNum -= 1
+	} else {
+		DB.FirstOrCreate(&down, Down{JokeId: joke.ID, UserId: userId})
+		joke.DownNum += 1
+	}
+
 	DB.Save(&joke)
 }

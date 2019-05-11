@@ -16,6 +16,7 @@ func UserProfile(c *gin.Context) models.User {
 	claims, err := util.ParseToken(token)
 	if err != nil {
 		c.AbortWithStatus(401)
+		return models.User{}
 	}
 
 	return models.GetUserProfile(claims.UserId)

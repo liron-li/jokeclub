@@ -1,14 +1,14 @@
 package api
 
 import (
+	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
 	"github.com/thedevsaddam/govalidator"
 	"jokeclub/app/models"
+	"jokeclub/pkg/cache"
 	"jokeclub/pkg/e"
 	"jokeclub/pkg/util"
 	"net/http"
-	"github.com/Unknwon/com"
-	"jokeclub/pkg/cache"
 )
 
 /**
@@ -94,18 +94,18 @@ func Jokes(c *gin.Context) {
 }
 
 /**
-* @api {post} /api/user/up 支持
-* @apiGroup jokes
-*
-* @apiParam {string} token token
-* @apiParam {int} joke_id 段子id
-* @apiParam {int} cancel 是否取消 0：否 1:是
-*
-* @apiSuccess {int} code  状态码 0：成功，其他表示错误
-* @apiSuccess {string} msg  消息
-* @apiSuccess {array} data  数据体
-*
-* @apiSampleRequest http://localhost:8000/api/joke/up
+ * @api {post} /api/user/up 支持
+ * @apiGroup jokes
+ *
+ * @apiParam {string} token token
+ * @apiParam {int} joke_id 段子id
+ * @apiParam {int} cancel 是否取消 0：否 1:是
+ *
+ * @apiSuccess {int} code  状态码 0：成功，其他表示错误
+ * @apiSuccess {string} msg  消息
+ * @apiSuccess {array} data  数据体
+ *
+ * @apiSampleRequest http://localhost:8000/api/joke/up
  */
 func JokeUp(c *gin.Context) {
 
@@ -156,8 +156,9 @@ func JokeUp(c *gin.Context) {
  * @api {post} /api/jokes/down 反对
  * @apiGroup jokes
  *
- * @apiParam {string} username 用户名称
- * @apiParam {string} password 密码
+ * @apiParam {string} token token
+ * @apiParam {int} joke_id 段子id
+ * @apiParam {int} cancel 是否取消 0：否 1:是
  *
  * @apiSuccess {int} code  状态码 0：成功，其他表示错误
  * @apiSuccess {string} msg  消息
@@ -166,6 +167,46 @@ func JokeUp(c *gin.Context) {
  * @apiSampleRequest http://localhost:8000/api/jokes/down
  */
 func JokeDown(c *gin.Context) {
+	rules := govalidator.MapData{
+		"joke_id": []string{"numeric", "required"},
+		"cancel":  []string{"numeric"},
+	}
+
+	opts := govalidator.Options{
+		Request:         c.Request, // request object
+		Rules:           rules,     // rules map
+		RequiredDefault: false,     // all the field to be pass the rules
+	}
+
+	v := govalidator.New(opts)
+	res := v.Validate()
+
+	// 如果参数验证失败
+	if len(res) > 0 {
+		util.ReturnInvalidParamsJson(c, res)
+		return
+	}
+
+	jokeId := c.PostForm("joke_id")
+	cancel := c.DefaultPostForm("cancel", "0")
+
+	idInt, err := com.StrTo(jokeId).Int()
+	joke := models.GetJoke(idInt)
+
+	if joke.ID <= 0 || err != nil {
+		util.ReturnErrorJson(c, e.Error)
+		c.Abort()
+		return
+	}
+
+	user := cache.UserProfile(c)
+
+	if cancel != "0" {
+		joke.Down(user.ID, true)
+	} else {
+		joke.Down(user.ID, false)
+	}
+
 	c.JSON(http.StatusOK, util.RetJson(e.Success, ""))
 }
 
