@@ -82,7 +82,7 @@ func (joke Joke) Up(userId int, cancel bool) {
 func (joke Joke) Down(userId int, cancel bool) {
 	var down Down
 	if cancel {
-		DB.Where(Like{UserId: userId, JokeId: joke.ID}).First(&down)
+		DB.Where(Down{UserId: userId, JokeId: joke.ID}).First(&down)
 		DB.Delete(&down)
 		joke.DownNum -= 1
 	} else {
